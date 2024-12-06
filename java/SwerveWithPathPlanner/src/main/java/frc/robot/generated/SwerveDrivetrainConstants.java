@@ -169,46 +169,29 @@ package com.ctre.phoenix6.swerve;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.swerve.jni.SwerveJNI;
 
+/*package com.ctre.phoenix6.swerve;
+
+import com.ctre.phoenix6.configs.Pigeon2Configuration;
+import com.ctre.phoenix6.swerve.jni.SwerveJNI;
+import com.studica.frc.AHRS;
+
 /**
  * Common constants for a swerve drivetrain.
  */
 public class SwerveDrivetrainConstants {
-    /**
-     * Name of the CAN bus the swerve drive is on. Possible CAN bus strings are:
-     * 
-     * <ul>
-     *   <li> empty string or "rio" for the native roboRIO CAN bus
-     *   <li> CANivore name or serial number
-     *   <li> "*" for any CANivore seen by the program
-     * </ul>
-     * 
-     * Note that all devices must be on the same CAN bus.
-     */
+    // CAN bus name for the drivetrain
     public String CANBusName = "rio";
-    /**
-     * CAN ID of the Pigeon2 on the drivetrain.
-     */
+
+    // Pigeon2 Configuration
     public int Pigeon2Id = 0;
-    /**
-     * The configuration object to apply to the Pigeon2. This defaults to null. If
-     * this remains null, then the Pigeon2 will not be configured (and whatever
-     * configs are on it remain on it). If this is not null, the Pigeon2 will be
-     * overwritten with these configs.
-     */
     public Pigeon2Configuration Pigeon2Configs = null;
-    
+
+    // NavX Configuration
+    public AHRS navx = null;  // NavX gyro object
+    public double gyroOffset = 0.0;  // Gyro offset for NavX
+
     /**
      * Modifies the CANBusName parameter and returns itself.
-     * <p>
-     * Name of the CAN bus the swerve drive is on. Possible CAN bus strings are:
-     * 
-     * <ul>
-     *   <li> empty string or "rio" for the native roboRIO CAN bus
-     *   <li> CANivore name or serial number
-     *   <li> "*" for any CANivore seen by the program
-     * </ul>
-     * 
-     * Note that all devices must be on the same CAN bus.
      *
      * @param newCANBusName Parameter to modify
      * @return this object
@@ -217,11 +200,9 @@ public class SwerveDrivetrainConstants {
         this.CANBusName = newCANBusName;
         return this;
     }
-    
+
     /**
      * Modifies the Pigeon2Id parameter and returns itself.
-     * <p>
-     * CAN ID of the Pigeon2 on the drivetrain.
      *
      * @param newPigeon2Id Parameter to modify
      * @return this object
@@ -230,14 +211,9 @@ public class SwerveDrivetrainConstants {
         this.Pigeon2Id = newPigeon2Id;
         return this;
     }
-    
+
     /**
      * Modifies the Pigeon2Configs parameter and returns itself.
-     * <p>
-     * The configuration object to apply to the Pigeon2. This defaults to null. If
-     * this remains null, then the Pigeon2 will not be configured (and whatever
-     * configs are on it remain on it). If this is not null, the Pigeon2 will be
-     * overwritten with these configs.
      *
      * @param newPigeon2Configs Parameter to modify
      * @return this object
@@ -246,12 +222,47 @@ public class SwerveDrivetrainConstants {
         this.Pigeon2Configs = newPigeon2Configs;
         return this;
     }
-    
+
+    /**
+     * Configures the NavX gyro and returns itself.
+     *
+     * @param navx The AHRS object representing the NavX gyro
+     * @return this object
+     */
+    public SwerveDrivetrainConstants withNavX(AHRS navx) {
+        this.navx = navx;
+        return this;
+    }
+
+    /**
+     * Sets the gyro offset for the NavX and returns itself.
+     *
+     * @param offset The gyro offset in degrees
+     * @return this object
+     */
+    public SwerveDrivetrainConstants withGyroOffset(double offset) {
+        this.gyroOffset = offset;
+        return this;
+    }
+
+    /**
+     * Creates the native instance for the drivetrain configuration.
+     * Note: NavX integration may not require native configuration.
+     *
+     * @return Native instance handle
+     */
     long createNativeInstance() {
+        if (navx != null) {
+            // Initialize NavX-related logic if necessary
+            navx.reset(); // Reset gyro to ensure consistency
+            navx.setAngleAdjustment(gyroOffset); // Apply offset
+            System.out.println("NavX gyro configured with offset: " + gyroOffset);
+        }
         return SwerveJNI.JNI_CreateDrivetrainConstants(
             CANBusName,
-            Pigeon2Id
+            Pigeon2Id // Pigeon2 ID is unused if NavX is active
         );
     }
 }
+
  */
